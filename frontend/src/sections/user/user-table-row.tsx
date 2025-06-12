@@ -1,4 +1,7 @@
+'use client';
+
 import { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
@@ -17,12 +20,8 @@ import { Iconify } from 'src/components/iconify';
 
 export type UserProps = {
   id: string;
-  name: string;
-  role: string;
-  status: string;
-  company: string;
-  avatarUrl: string;
-  isVerified: boolean;
+  tipus: string;
+  preu: number;
 };
 
 type UserTableRowProps = {
@@ -33,6 +32,7 @@ type UserTableRowProps = {
 
 export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) {
   const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
+  const navigate = useNavigate();
 
   const handleOpenPopover = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     setOpenPopover(event.currentTarget);
@@ -42,6 +42,10 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
     setOpenPopover(null);
   }, []);
 
+  const handleEdit = () => {
+    navigate('/products/'); 
+    handleClosePopover();
+  };
   return (
     <>
       <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
@@ -57,26 +61,14 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
               alignItems: 'center',
             }}
           >
-            <Avatar alt={row.name} src={row.avatarUrl} />
-            {row.name}
+            <Avatar alt={row.id}/>
+            {row.id}
           </Box>
         </TableCell>
 
-        <TableCell>{row.company}</TableCell>
+        <TableCell>{row.tipus}</TableCell>
 
-        <TableCell>{row.role}</TableCell>
-
-        <TableCell align="center">
-          {row.isVerified ? (
-            <Iconify width={22} icon="solar:check-circle-bold" sx={{ color: 'success.main' }} />
-          ) : (
-            '-'
-          )}
-        </TableCell>
-
-        <TableCell>
-          <Label color={(row.status === 'banned' && 'error') || 'success'}>{row.status}</Label>
-        </TableCell>
+        <TableCell>{row.preu}</TableCell>
 
         <TableCell align="right">
           <IconButton onClick={handleOpenPopover}>
@@ -108,14 +100,14 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
             },
           }}
         >
-          <MenuItem onClick={handleClosePopover}>
+          <MenuItem onClick={handleEdit}>
             <Iconify icon="solar:pen-bold" />
-            Edit
+            Modificar
           </MenuItem>
 
           <MenuItem onClick={handleClosePopover} sx={{ color: 'error.main' }}>
             <Iconify icon="solar:trash-bin-trash-bold" />
-            Delete
+            Eliminar
           </MenuItem>
         </MenuList>
       </Popover>

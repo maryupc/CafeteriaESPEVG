@@ -86,7 +86,6 @@ export function ProductsView() {
 
   return (
     <DashboardContent>
-      <CartIcon totalItems={8} />
 
       <Typography variant="h4" sx={{ mb: 5 }}>
         Products
@@ -100,7 +99,7 @@ export function ProductsView() {
           justifyContent: 'flex-end',
         }}
       >
-        <Box
+        {/* <Box
           sx={{
             my: 1,
             gap: 1,
@@ -135,12 +134,12 @@ export function ProductsView() {
               { value: 'priceAsc', label: 'Price: Low-High' },
             ]}
           />
-        </Box>
+        </Box> */}
       </Box>
 
       <Grid container spacing={3}>
         {_products.map((product) => (
-          <Grid key={product.id} size={{ xs: 12, sm: 6, md: 3 }}>
+          <Grid key={product.name} size={{ xs: 12, sm: 6, md: 3 }}>
             <ProductItem product={product} />
           </Grid>
         ))}

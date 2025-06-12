@@ -19,14 +19,14 @@ import { Chart, useChart } from 'src/components/chart';
 type Props = CardProps & {
   title: string;
   total: number;
-  percent: number;
+  //percent: number;
   color?: PaletteColorKey;
   icon: React.ReactNode;
-  chart: {
-    series: number[];
-    categories: string[];
-    options?: ChartOptions;
-  };
+  //chart: {
+  //  series: number[];
+  //  categories: string[];
+ //   options?: ChartOptions;
+ // };
 };
 
 export function AnalyticsWidgetSummary({
@@ -34,8 +34,8 @@ export function AnalyticsWidgetSummary({
   icon,
   title,
   total,
-  chart,
-  percent,
+  //chart,
+  //percent,
   color = 'primary',
   ...other
 }: Props) {
@@ -43,7 +43,7 @@ export function AnalyticsWidgetSummary({
 
   const chartColors = [theme.palette[color].dark];
 
-  const chartOptions = useChart({
+/*   const chartOptions = useChart({
     chart: { sparkline: { enabled: true } },
     colors: chartColors,
     xaxis: { categories: chart.categories },
@@ -81,7 +81,7 @@ export function AnalyticsWidgetSummary({
         {fPercent(percent)}
       </Box>
     </Box>
-  );
+  ); */
 
   return (
     <Card
@@ -100,7 +100,7 @@ export function AnalyticsWidgetSummary({
     >
       <Box sx={{ width: 48, height: 48, mb: 3 }}>{icon}</Box>
 
-      {renderTrending()}
+      {/*//renderTrending()*/}
 
       <Box
         sx={{
@@ -116,12 +116,12 @@ export function AnalyticsWidgetSummary({
           <Box sx={{ typography: 'h4' }}>{fShortenNumber(total)}</Box>
         </Box>
 
-        <Chart
+        {/* <Chart
           type="line"
           series={[{ data: chart.series }]}
           options={chartOptions}
           sx={{ width: 84, height: 56 }}
-        />
+        /> */}
       </Box>
 
       <SvgColor
