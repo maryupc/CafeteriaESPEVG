@@ -4,19 +4,23 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
 import Radio from '@mui/material/Radio';
+import Select from '@mui/material/Select';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
+import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import RadioGroup from '@mui/material/RadioGroup';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
 import Autocomplete from '@mui/material/Autocomplete';
 import InputAdornment from '@mui/material/InputAdornment';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
 import { useRouter } from 'src/routes/hooks';
 
-import { _commanda } from 'src/_mock';
+import { _item } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
 
 import { Iconify } from 'src/components/iconify';
@@ -24,58 +28,32 @@ import { Iconify } from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-const GENDER_OPTIONS = [
-  { value: 'men', label: 'Men' },
-  { value: 'women', label: 'Women' },
-  { value: 'kids', label: 'Kids' },
-];
 
-const CATEGORY_OPTIONS = [
-  { value: 'all', label: 'All' },
-  { value: 'shose', label: 'Shose' },
-  { value: 'apparel', label: 'Apparel' },
-  { value: 'accessories', label: 'Accessories' },
-];
 
-const RATING_OPTIONS = ['up4Star', 'up3Star', 'up2Star', 'up1Star'];
-
-const PRICE_OPTIONS = [
-  { value: 'below', label: 'Below $25' },
-  { value: 'between', label: 'Between $25 - $75' },
-  { value: 'above', label: 'Above $75' },
-];
-
-const COLOR_OPTIONS = [
-  '#00AB55',
-  '#000000',
-  '#FFFFFF',
-  '#FFC0CB',
-  '#FF4842',
-  '#1890FF',
-  '#94D82D',
-  '#FFC107',
-];
+export type ItemProps = {
+  id: string;
+  tipus: string;
+  name: string | null;
+  preu: number;
+};
 
 export type ComandaProps = {
   id: string;
   tipus: string;
+  name: string | null;
   preu: number;
 };
 
-const opciones = [
-  { id: '001', label: "Artículo 1" },
-  { id: '002', label: "Artículo 2" },
-  { id: '003', label: "Artículo 3" },
-  // etc.
-];
+const opciones : ItemProps[] = _item;
 
 export function CreateComanda() {
     const router = useRouter();
   const [value, setValue] = useState('Estudiant');
   const [inputValue, setInputValue] = useState('');
-  const [items, setItems] = useState<{ id: string; quantitat: string }[]>([
-  { id: '', quantitat: '' },
+  const [items, setItems] = useState<{ id: string; quantitat: number }[]>([
+  { id: '', quantitat: 0 },
 ]);
+  const [metodePagament, setMetodePagament] = useState('efectiu'); // o 'targeta'
   // Este estado contiene el nombre que se mostrará en el input
   const [selectedName, setSelectedName] = useState('ID Estudiant');
 
@@ -88,21 +66,38 @@ export function CreateComanda() {
     else if (newValue === 'Professor') setSelectedName('ID Professor o correu');
     else setSelectedName('Usuari Anònim');
   
-    setItems([{ id: '', quantitat: '' }]); // reset items
+    setItems([{ id: '', quantitat: 0 }]); // reset items
 
   };
 
-  const handleChangeItem = (index: number, field: 'id' | 'quantitat', newValue: string) => {
-    const updatedItems = [...items];
-    updatedItems[index][field] = newValue;
-    setItems(updatedItems);
-  };
+const handleChangeItem = (
+  index: number,
+  field: 'id' | 'quantitat',
+  newValue: string
+) => {
+  const updatedItems = [...items];
+
+  if (field === 'quantitat') {
+    updatedItems[index].quantitat = Number(newValue);
+  } else if (field === 'id') {
+    updatedItems[index].id = newValue;
+  }
+
+  setItems(updatedItems);
+};
+
     const handleAddItem = () => {
-    setItems([...items, { id: '', quantitat: '' }]);
+    setItems([...items, { id: '', quantitat: 0 }]);
   };
     const handleSignIn = useCallback(() => {
         router.push('/');
     }, [router]);
+
+const total = items.reduce((acc, item) => {
+  const selected = opciones.find(opt => opt.id === item.id);
+  if (!selected) return acc;
+  return acc + selected.preu * Number(item.quantitat);
+}, 0);
 
   return (
     <DashboardContent>
@@ -135,7 +130,7 @@ export function CreateComanda() {
           <Box key={index} sx={{ display: 'flex', flexDirection: 'row', gap: 2, mb: 2 }}>
             <Autocomplete
               options={opciones}
-              getOptionLabel={(option) => option.label}
+              getOptionLabel={(option) => option.name ?? option.id}
               sx={{ width: 300 }}
               value={opciones.find(opt => opt.id === item.id) || null}
               onChange={(event, newValue) => {
@@ -144,7 +139,7 @@ export function CreateComanda() {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label="ID de l'article"
+                  label="ID o nom de l'article"
                   slotProps={{ inputLabel: { shrink: true } }}
                 />
               )}
@@ -174,9 +169,27 @@ export function CreateComanda() {
           Més Items
         </Button>
       )}
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 2 }}>
+        <Typography variant="h6">
+          Total: {total.toFixed(2)} €
+        </Typography>
 
+        <FormControl sx={{ minWidth: 150 }} size="small">
+          <InputLabel id="metode-pagament-label">Mètode de pagament</InputLabel>
+          <Select
+            labelId="metode-pagament-label"
+            id="metode-pagament"
+            value={metodePagament}
+            label="Mètode de pagament"
+            onChange={(e) => setMetodePagament(e.target.value)}
+          >
+            <MenuItem value="efectiu">Efectiu</MenuItem>
+            <MenuItem value="targeta">Targeta</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
       <Button variant="contained" onClick={handleSignIn}>
-        Enviar comanda
+        Efectuar comanda
       </Button>
     </Box>
   

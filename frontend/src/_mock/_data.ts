@@ -28,11 +28,15 @@ export const _users = [...Array(24)].map((_, index) => ({
 }));
 
 
-export const _commanda = [...Array(24)].map((_, index) => ({
-  id: _id(index),
-  tipus: _tipus(index),
-  preu: _price(index),
-}));
+export const _item = [...Array(24)].map((_, index) => {
+  const tipus = _tipus(index);
+  return {
+    id: _id(index),
+    tipus,
+    name: tipus === "menu" ? null : _alimentNames(index),
+    preu: _price(index),
+  };
+});
 
 // ----------------------------------------------------------------------
 
