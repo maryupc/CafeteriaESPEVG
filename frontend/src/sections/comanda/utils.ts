@@ -71,7 +71,7 @@ export function applyFilter({ inputData, comparator, filterName }: ApplyFilterPr
 
   if (filterName) {
     inputData = inputData.filter((comanda) =>
-      comanda.id_usuari.toString().toLowerCase().includes(filterName.toLowerCase())
+      comanda.date.toString().toLowerCase().includes(filterName.toLowerCase())
     );
   }
 

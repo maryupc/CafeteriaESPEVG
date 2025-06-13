@@ -20,9 +20,9 @@ import { Iconify } from 'src/components/iconify';
 
 export type ItemProps = {
   id: string;
-  tipus: string;
+  price: number;
+  type: string;
   name: string | null;
-  preu: number;
 };
 
 
@@ -58,23 +58,14 @@ export function ItemTableRow({ row, selected, onSelectRow }: ItemTableRowProps) 
         </TableCell>
 
         <TableCell component="th" scope="row">
-          <Box
-            sx={{
-              gap: 2,
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <Avatar alt={row.id}/>
             {row.id}
-          </Box>
         </TableCell>
 
         <TableCell>{row.name}</TableCell>
 
-        <TableCell>{row.tipus}</TableCell>
+        <TableCell>{row.type}</TableCell>
 
-        <TableCell>{row.preu}</TableCell>
+        <TableCell>{row.price}</TableCell>
 
         <TableCell align="right">
           <IconButton onClick={handleOpenPopover}>

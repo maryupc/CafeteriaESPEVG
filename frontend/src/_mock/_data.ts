@@ -29,16 +29,85 @@ export const _users = [...Array(24)].map((_, index) => ({
   preu: _preu(index),
 }));
 
+export type ItemProps = {
+  id: string;
+  price: number;
+  type: string;
+  name: string | null;
+};
 
-export const _item = [...Array(24)].map((_, index) => {
-  const tipus = _tipus(index);
-  return {
-    id: _id(index),
-    tipus,
-    name: tipus === "menu" ? null : _alimentNames(index),
-    preu: _price(index),
-  };
-});
+export async function fetchItemsFromAPI(): Promise<ItemProps[]> {
+  try {
+    const response = await fetch('http://192.168.1.79:8000/items/', {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log('Datos crudos de la API:', data);
+
+    // Convertimos id a string para que coincida con ItemProps
+    const formattedData: ItemProps[] = data.map((item: any) => ({
+      id: item.id.toString(),
+      price: item.price,
+      type: item.type,
+      name: item.name,
+    }));
+
+    return formattedData;
+  } catch (error) {
+    console.error('Error al obtener items:', error);
+    return [];
+  }
+}
+
+export type ComandaProps = {
+  id: string;
+  id_usuari: string;
+  date: string;
+  time: string;
+  preu_total: number;
+  tipus_pagament: string;
+};
+
+export async function fetchComandesFromAPI(): Promise<ComandaProps[]> {
+  try {
+    const response = await fetch('http://192.168.1.79:8000/comandes/', {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log('Datos crudos de la API:', JSON.stringify(data, null, 2));
+
+    const formattedData: ComandaProps[] = data.map((comanda: any) => ({
+      id: comanda.id.toString(),
+      id_usuari: comanda.member_id !== null ? comanda.member_id.toString() : "Anònim",
+      date: comanda.c_date,
+      time: comanda.c_time,
+      preu_total: comanda.total_price,
+      tipus_pagament: comanda.payment_method,
+    }));
+
+    return formattedData;
+  } catch (error) {
+    console.error('Error al obtener items:', error);
+    return [];
+  }
+}
+
 
 export const _comandes = [...Array(24)].map((_, index) => {
   const tipus = _tipus(index);

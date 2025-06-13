@@ -21,12 +21,11 @@ import { Iconify } from 'src/components/iconify';
 
 export type ComandaProps = {
   id: string;
-  id_usuari: number;
+  id_usuari: string;
   date: string;
   time: string;
   preu_total: number;
   tipus_pagament: string;
-
 };
 
 type ComandesTableRowProps = {

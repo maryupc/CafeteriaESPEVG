@@ -1,5 +1,5 @@
-import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useEffect, useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
-import { _comandes } from 'src/_mock';
+import { fetchComandesFromAPI } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
 
 import { Iconify } from 'src/components/iconify';
@@ -37,8 +37,22 @@ export function ComandaView() {
 
   const [filterName, setFilterName] = useState('');
 
+  const [comandaread, setItemsread] = useState<ComandaProps[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadComandes = async () => {
+      const data = await fetchComandesFromAPI();
+      setItemsread(data);
+      setLoading(false);
+    };
+
+    loadComandes();
+  }, []);
+
+
   const dataFiltered: ComandaProps[] = applyFilter({
-    inputData: _comandes,
+    inputData: comandaread,
     comparator: getComparator(table.order, table.orderBy),
     filterName,
   });
@@ -83,19 +97,19 @@ export function ComandaView() {
               <ComandaTableHead
                 order={table.order}
                 orderBy={table.orderBy}
-                rowCount={_comandes.length}
+                rowCount={comandaread.length}
                 numSelected={table.selected.length}
                 onSort={table.onSort}
                 onSelectAllRows={(checked) =>
                   table.onSelectAllRows(
                     checked,
-                    _comandes.map((comanda) => comanda.id)
+                    comandaread.map((comanda) => comanda.id)
                   )
                 }
                 headLabel={[
                   { id: 'id', label: 'Id' },
                   { id: 'Usuari', label: 'id_usuari' },
-                  { id: 'date', label: 'Data i Hora' },
+                  { id: 'date', label: 'Data' },
                   { id: 'time', label: 'Hora' },
                   { id: 'preu_total', label: 'Preu total' },
                   { id: 'tipus_pagament', label: 'Tipus pagament' },
@@ -119,7 +133,7 @@ export function ComandaView() {
 
                 <TableEmptyRows
                   height={68}
-                  emptyRows={emptyRows(table.page, table.rowsPerPage, _comandes.length)}
+                  emptyRows={emptyRows(table.page, table.rowsPerPage, comandaread.length)}
                 />
 
                 {notFound && <TableNoData searchQuery={filterName} />}
@@ -131,7 +145,7 @@ export function ComandaView() {
         <TablePagination
           component="div"
           page={table.page}
-          count={_comandes.length}
+          count={comandaread.length}
           rowsPerPage={table.rowsPerPage}
           onPageChange={table.onChangePage}
           rowsPerPageOptions={[5, 10, 25]}

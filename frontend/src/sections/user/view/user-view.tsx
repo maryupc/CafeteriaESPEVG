@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
-import { _item } from 'src/_mock';
+import { fetchItemsFromAPI } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
 
 import { Iconify } from 'src/components/iconify';
@@ -30,9 +30,26 @@ export function UserView() {
   const table = useTable();
 
   const [filterName, setFilterName] = useState('');
+  const [items, setItems] = useState<ItemProps[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadItems = async () => {
+      const data = await fetchItemsFromAPI();
+      setItems(data);
+      setLoading(false);
+    };
+
+    loadItems();
+  }, []);
+
+  if (loading) return <p>Carregant items...</p>;
+
+
+
 
   const dataFiltered: ItemProps[] = applyFilter({
-    inputData: _item,
+    inputData: items,
     comparator: getComparator(table.order, table.orderBy),
     filterName,
   });
@@ -76,13 +93,13 @@ export function UserView() {
               <ItemTableHead
                 order={table.order}
                 orderBy={table.orderBy}
-                rowCount={_item.length}
+                rowCount={items.length}
                 numSelected={table.selected.length}
                 onSort={table.onSort}
                 onSelectAllRows={(checked) =>
                   table.onSelectAllRows(
                     checked,
-                    _item.map((item) => item.id)
+                    items.map((item) => item.id)
                   )
                 }
                 headLabel={[
@@ -110,7 +127,7 @@ export function UserView() {
 
                 <TableEmptyRows
                   height={68}
-                  emptyRows={emptyRows(table.page, table.rowsPerPage, _item.length)}
+                  emptyRows={emptyRows(table.page, table.rowsPerPage, items.length)}
                 />
 
                 {notFound && <TableNoData searchQuery={filterName} />}
@@ -122,7 +139,7 @@ export function UserView() {
         <TablePagination
           component="div"
           page={table.page}
-          count={_item.length}
+          count={items.length}
           rowsPerPage={table.rowsPerPage}
           onPageChange={table.onChangePage}
           rowsPerPageOptions={[5, 10, 25]}

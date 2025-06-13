@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -20,7 +20,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 
 import { useRouter } from 'src/routes/hooks';
 
-import { _item } from 'src/_mock';
+import { fetchItemsFromAPI } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
 
 import { Iconify } from 'src/components/iconify';
@@ -32,13 +32,13 @@ import { Iconify } from 'src/components/iconify';
 
 export type ItemProps = {
   id: string;
-  tipus: string;
+  price: number;
+  type: string;
   name: string | null;
-  preu: number;
 };
 
 export type ComandaItem = {
-  id: string;        // ID del producto
+  id: string;       // ID del producto
   quantitat: number;
 };
 
@@ -51,17 +51,31 @@ export type ComandaProps = {
   items: ComandaItem[]; // <--- nuevo campo
 };
 
-const opciones : ItemProps[] = _item;
+
+
 
 export function CreateComanda() {
-    const router = useRouter();
+  const [itemsread, setItemsread] = useState<ItemProps[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadItems = async () => {
+      const data = await fetchItemsFromAPI();
+      setItemsread(data);
+      setLoading(false);
+    };
+
+    loadItems();
+  }, []);
+
+  const router = useRouter();
   const [value, setValue] = useState('Estudiant');
   const [inputValue, setInputValue] = useState('');
   const [items, setItems] = useState<{ id: string; quantitat: number }[]>([
   { id: '', quantitat: 0 },
 ]);
   const [comandes, setComandes] = useState<ComandaProps[]>([]);
-  const [metodePagament, setMetodePagament] = useState('efectiu'); // o 'targeta'
+  const [metodePagament, setMetodePagament] = useState('cash'); // o 'targeta'
   // Este estado contiene el nombre que se mostrará en el input
   const [selectedName, setSelectedName] = useState('ID Estudiant');
 
@@ -125,9 +139,9 @@ const handleChangeItem = (
     }, [router]);
 
 const total = items.reduce((acc, item) => {
-  const selected = opciones.find(opt => opt.id === item.id);
+  const selected = itemsread.find(opt => opt.id === item.id);
   if (!selected) return acc;
-  return acc + selected.preu * Number(item.quantitat);
+  return acc + selected.price * Number(item.quantitat);
 }, 0);
 
   return (
@@ -160,10 +174,10 @@ const total = items.reduce((acc, item) => {
         items.map((item, index) => (
           <Box key={index} sx={{ display: 'flex', flexDirection: 'row', gap: 2, mb: 2 }}>
             <Autocomplete
-              options={opciones}
+              options={itemsread}
               getOptionLabel={(option) => option.name ?? option.id}
               sx={{ width: 300 }}
-              value={opciones.find(opt => opt.id === item.id) || null}
+              value={itemsread.find(opt => opt.id === item.id) || null}
               onChange={(event, newValue) => {
                 handleChangeItem(index, 'id', newValue ? newValue.id : '');
               }}
@@ -214,8 +228,9 @@ const total = items.reduce((acc, item) => {
             label="Mètode de pagament"
             onChange={(e) => setMetodePagament(e.target.value)}
           >
-            <MenuItem value="efectiu">Efectiu</MenuItem>
-            <MenuItem value="targeta">Targeta</MenuItem>
+            <MenuItem value="cash">Efectiu</MenuItem>
+            <MenuItem value="card">Targeta</MenuItem>
+            <MenuItem value="mobile">Mòbil</MenuItem>
           </Select>
         </FormControl>
       </Box>
