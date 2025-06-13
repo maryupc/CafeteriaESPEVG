@@ -1,3 +1,9 @@
+### Prerequisites
+
+* **Activate myupclink VPN or connection** before running the API, so you can access the Ubiwan PostgreSQL database remotely.
+
+---
+
 # ☕ CafeteriaESPEVG API
 
 Backend API for managing cafeteria orders (`comandes`), items, menus, and product data using **FastAPI**, **PostgreSQL**, and **SQLAlchemy**.
