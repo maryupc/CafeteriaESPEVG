@@ -21,26 +21,6 @@ export type ProductItemProps = {
 };
 
 export function ProductItem({ product }: { product: ProductItemProps }) {
-  // const renderStatus = (
-  //   <Label
-  //   >
-      
-  //   </Label>
-  // );
-
-  const renderImg = (
-    <Box
-      component="img"
-      alt={product.name}
-      sx={{
-        top: 0,
-        width: 1,
-        height: 1,
-        objectFit: 'cover',
-        position: 'absolute',
-      }}
-    />
-  );
 
   const renderPrice = (
     <Typography variant="subtitle1">

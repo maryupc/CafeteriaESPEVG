@@ -1,12 +1,12 @@
-import { useState, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useEffect, useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-import { _products } from 'src/_mock';
+import { fetchProducts } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
 
 import { ProductItem } from '../product-item';
@@ -69,14 +69,31 @@ export function ProductsView() {
   const producte = location.state;
 
   const [price, setPrice] = useState(producte?.price ?? 0);
+  const [products, setProducts] = useState<ProductItemProps[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const handlePriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPrice(parseFloat(event.target.value) || 0);
   };
 
+
+  useEffect(() => {
+      const loadComandes = async () => {
+      const data = await fetchProducts(producte.id);
+        setProducts(data);
+        setLoading(false);
+      };
+  
+      loadComandes();
+    }, []);
+
+
   if (!producte) {
     return <Typography variant="h6">No s’ha seleccionat cap producte.</Typography>;
   }
+
+
+
   return (
     <DashboardContent>
 
@@ -111,7 +128,7 @@ export function ProductsView() {
     </Box>
 
       <Grid container spacing={3}>
-        {_products.map((product) => (
+        {products.map((product) => (
           <Grid key={product.name} size={{ xs: 12, sm: 6, md: 3 }}>
             <ProductItem product={product} />
           </Grid>
