@@ -1,42 +1,170 @@
-# backend
+### Prerequisites
 
-This project was created using the [Ktor Project Generator](https://start.ktor.io).
+* **Activate myupclink VPN or connection** before running the API, so you can access the Ubiwan PostgreSQL database remotely.
 
-Here are some useful links to get you started:
+---
 
-- [Ktor Documentation](https://ktor.io/docs/home.html)
-- [Ktor GitHub page](https://github.com/ktorio/ktor)
-- The [Ktor Slack chat](https://app.slack.com/client/T09229ZC6/C0A974TJ9). You'll need
-  to [request an invite](https://surveys.jetbrains.com/s3/kotlin-slack-sign-up) to join.
+# ☕ CafeteriaESPEVG API
 
-## Features
+Backend API for managing cafeteria orders (`comandes`), items, menus, and product data using **FastAPI**, **PostgreSQL**, and **SQLAlchemy**.
 
-Here's a list of features included in this project:
+---
 
-| Name                                                                   | Description                                                                        |
-|------------------------------------------------------------------------|------------------------------------------------------------------------------------|
-| [Routing](https://start.ktor.io/p/routing)                             | Provides a structured routing DSL                                                  |
-| [Content Negotiation](https://start.ktor.io/p/content-negotiation)     | Provides automatic content conversion according to Content-Type and Accept headers |
-| [kotlinx.serialization](https://start.ktor.io/p/kotlinx-serialization) | Handles JSON serialization using kotlinx.serialization library                     |
-
-## Building & Running
-
-To build or run the project, use one of the following tasks:
-
-| Task                          | Description                                                          |
-|-------------------------------|----------------------------------------------------------------------|
-| `./gradlew test`              | Run the tests                                                        |
-| `./gradlew build`             | Build everything                                                     |
-| `buildFatJar`                 | Build an executable JAR of the server with all dependencies included |
-| `buildImage`                  | Build the docker image to use with the fat JAR                       |
-| `publishImageToLocalRegistry` | Publish the docker image locally                                     |
-| `run`                         | Run the server                                                       |
-| `runDocker`                   | Run using the local docker image                                     |
-
-If the server starts successfully, you'll see the following output:
+## 📁 Project Structure
 
 ```
-2024-12-04 14:32:45.584 [main] INFO  Application - Application started in 0.303 seconds.
-2024-12-04 14:32:45.682 [main] INFO  Application - Responding at http://0.0.0.0:8080
+backend/
+├── app/
+│   ├── crud/             # Database interaction logic
+│   ├── models/           # SQLAlchemy models
+│   ├── routes/           # FastAPI route definitions
+│   ├── schemas/          # Pydantic schemas and data validation
+│   ├── config.py         # Optional configuration
+│   ├── database.py       # DB connection setup
+│   └── main.py           # Application entry point
+├── requirements.txt      # Python dependencies
+├── README.md             # This file
+└── .gitignore
 ```
 
+---
+
+## 🚀 Getting Started
+
+### ✅ Prerequisites
+
+* Python 3.10 or higher
+* PostgreSQL database
+* `virtualenv` (recommended)
+
+---
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/yourusername/CafeteriaESPEVG.git
+cd CafeteriaESPEVG/backend
+```
+
+---
+
+### 2. Set up a virtual environment
+
+```bash
+python -m venv venv
+source venv/bin/activate       # On Windows: venv\Scripts\activate
+```
+
+---
+
+### 3. Install the requirements
+
+```bash
+pip install -r requirements.txt
+```
+
+If `requirements.txt` is missing, install manually:
+
+```bash
+pip install fastapi uvicorn[standard] sqlalchemy databases psycopg2-binary pydantic python-dotenv
+```
+
+---
+
+### 4. Configure environment (optional)
+
+If you're using environment variables, create a `.env` file in `app/` or root directory with:
+
+```env
+DATABASE_URL=postgresql://user:password@localhost/dbname
+```
+
+Ensure `database.py` uses this variable with something like:
+
+```python
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+```
+
+---
+
+### 5. Start the API server
+
+```bash
+uvicorn app.main:app --reload
+```
+
+This will start the server at:
+
+```
+http://127.0.0.1:8000
+```
+
+---
+
+## 🧪 Testing the API
+
+You can use `curl`, Postman, or the Swagger UI to test endpoints.
+
+Example `curl`:
+
+```bash
+curl -X GET http://localhost:8000/items/ -H "accept: application/json"
+```
+
+---
+
+Here are the corresponding `curl` commands to test the API endpoints shown in your logs. You can include these examples in your `README.md` to guide users on how to interact with the API.
+
+---
+
+### 📦 **Get All Item-Productes**
+
+**Endpoint:**
+
+```http
+GET /item_productes/
+```
+
+**Curl:**
+
+```bash
+curl -X GET "http://localhost:8000/item_productes/" -H "accept: application/json"
+```
+
+---
+
+### 🛒 **Get All Items**
+
+**Endpoint:**
+
+```http
+GET /items/
+```
+
+**Curl:**
+
+```bash
+curl -X GET "http://localhost:8000/items/" -H "accept: application/json"
+```
+
+---
+
+### 📋 **Get All Comandes**
+
+**Endpoint:**
+
+```http
+GET /comandes/
+```
+
+**Curl:**
+
+```bash
+curl -X GET "http://localhost:8000/comandes/" -H "accept: application/json"
+```
+
+---
