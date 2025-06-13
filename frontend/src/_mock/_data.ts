@@ -38,7 +38,7 @@ export type ItemProps = {
 
 export async function fetchItemsFromAPI(): Promise<ItemProps[]> {
   try {
-    const response = await fetch('http://192.168.1.79:8000/items/', {
+    const response = await fetch('http://localhost:8000/items/', {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -78,7 +78,7 @@ export type ComandaProps = {
 
 export async function fetchComandesFromAPI(): Promise<ComandaProps[]> {
   try {
-    const response = await fetch('http://192.168.1.79:8000/comandes/', {
+    const response = await fetch('http://localhost:8000/comandes/', {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -134,7 +134,6 @@ export const _products = [...Array(24)].map((_, index) => {
     brand: _alimentNames(index),
     nutrition_info: _description(index),
     price: _price(index),
-    coverUrl: `/assets/images/product/product-${setIndex}.webp`,
     Quantitat: quantitat,// 5 unidades
     stock:
       ([1, 3, 5].includes(setIndex) && 10) ||  // por ejemplo, 10 unidades en stock

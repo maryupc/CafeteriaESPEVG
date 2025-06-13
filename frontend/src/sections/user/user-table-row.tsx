@@ -47,7 +47,7 @@ export function ItemTableRow({ row, selected, onSelectRow }: ItemTableRowProps) 
   }, []);
 
   const handleEdit = () => {
-    navigate('/products', { state: { name: row.name ?? row.id } }); 
+    navigate('/products', { state: row }); 
     handleClosePopover();
   };
   return (

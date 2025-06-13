@@ -3,18 +3,15 @@ import { useLocation } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import Pagination from '@mui/material/Pagination';
+import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
 import { _products } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
 
 import { ProductItem } from '../product-item';
-import { ProductSort } from '../product-sort';
-import { CartIcon } from '../product-cart-widget';
-import { ProductFilters } from '../product-filters';
 
-import type { FiltersProps } from '../product-filters';
+import type { ProductItemProps } from '../product-item';
 
 // ----------------------------------------------------------------------
 
@@ -58,89 +55,61 @@ const defaultFilters = {
   category: CATEGORY_OPTIONS[0].value,
 };
 
+export type ItemProps = {
+  id: string;
+  price: number;
+  type: string;
+  name: string | null;
+};
+
 export function ProductsView() {
 
   const location = useLocation();
   const name = location.state?.name;
 
-  const [sortBy, setSortBy] = useState('featured');
+  const producte = location.state;
 
-  const [openFilter, setOpenFilter] = useState(false);
+  const [price, setPrice] = useState(producte?.price ?? 0);
 
-  const [filters, setFilters] = useState<FiltersProps>(defaultFilters);
+  const handlePriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPrice(parseFloat(event.target.value) || 0);
+  };
 
-  const handleOpenFilter = useCallback(() => {
-    setOpenFilter(true);
-  }, []);
-
-  const handleCloseFilter = useCallback(() => {
-    setOpenFilter(false);
-  }, []);
-
-  const handleSort = useCallback((newSort: string) => {
-    setSortBy(newSort);
-  }, []);
-
-  const handleSetFilters = useCallback((updateState: Partial<FiltersProps>) => {
-    setFilters((prevValue) => ({ ...prevValue, ...updateState }));
-  }, []);
-
-  const canReset = Object.keys(filters).some(
-    (key) => filters[key as keyof FiltersProps] !== defaultFilters[key as keyof FiltersProps]
-  );
-
+  if (!producte) {
+    return <Typography variant="h6">No s’ha seleccionat cap producte.</Typography>;
+  }
   return (
     <DashboardContent>
 
-      <Typography variant="h4" sx={{ mb: 5 }}>
-        Producte seleccionat: {name}
-      </Typography>
-      <Box
-        sx={{
-          mb: 5,
-          display: 'flex',
-          alignItems: 'center',
-          flexWrap: 'wrap-reverse',
-          justifyContent: 'flex-end',
-        }}
-      >
-        {/* <Box
-          sx={{
-            my: 1,
-            gap: 1,
-            flexShrink: 0,
-            display: 'flex',
-          }}
-        >
-          <ProductFilters
-            canReset={canReset}
-            filters={filters}
-            onSetFilters={handleSetFilters}
-            openFilter={openFilter}
-            onOpenFilter={handleOpenFilter}
-            onCloseFilter={handleCloseFilter}
-            onResetFilter={() => setFilters(defaultFilters)}
-            options={{
-              genders: GENDER_OPTIONS,
-              categories: CATEGORY_OPTIONS,
-              ratings: RATING_OPTIONS,
-              price: PRICE_OPTIONS,
-              colors: COLOR_OPTIONS,
-            }}
-          />
+    <Typography variant="h4" sx={{ mb: 3 }}>
+      Producte seleccionat: {name}
+    </Typography>
 
-          <ProductSort
-            sortBy={sortBy}
-            onSort={handleSort}
-            options={[
-              { value: 'featured', label: 'Featured' },
-              { value: 'newest', label: 'Newest' },
-              { value: 'priceDesc', label: 'Price: High-Low' },
-              { value: 'priceAsc', label: 'Price: Low-High' },
-            ]}
-          />
-        </Box> */}
+    <Box
+      sx={{
+        mb: 3,
+        display: 'flex',
+        alignItems: 'center',
+        gap: 2,
+        flexWrap: 'wrap', // permite que en pantallas pequeñas se adapte
+        justifyContent: 'space-between',
+      }}
+    >
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Typography variant="h6">Preu producte:</Typography>
+        <TextField
+          variant="outlined"
+          size="small"
+          value={producte.price}
+          onChange={(e) => setPrice(e.target.value)} // necesitas un estado para esto
+          sx={{ width: 100 }}
+        />
       </Box>
+
+      <Typography variant="h6">
+        Aquest producte conté els següents aliments:
+      </Typography>
+    </Box>
 
       <Grid container spacing={3}>
         {_products.map((product) => (

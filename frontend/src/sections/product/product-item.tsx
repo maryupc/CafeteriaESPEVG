@@ -16,7 +16,6 @@ export type ProductItemProps = {
   brand: string;
   price: number;
   nutrition_info: string;
-  coverUrl: string;
   Quantitat: number;
   stock: number | null;
 };
@@ -33,7 +32,6 @@ export function ProductItem({ product }: { product: ProductItemProps }) {
     <Box
       component="img"
       alt={product.name}
-      src={product.coverUrl}
       sx={{
         top: 0,
         width: 1,
@@ -51,33 +49,34 @@ export function ProductItem({ product }: { product: ProductItemProps }) {
     </Typography>
   );
 
-  return (
-    <Card>
-      <Box sx={{ pt: '100%', position: 'relative' }}>
-        {renderImg}
-      </Box>
+    return (
+      <Card sx={{ maxWidth: 300 }}>
+        <Stack spacing={2} sx={{ p: 2 }}>
+          <Typography variant="subtitle1" noWrap>
+            {product.name}
+          </Typography>
 
-      <Stack spacing={2} sx={{ p: 3 }}>
-        <Link color="inherit" underline="hover" variant="subtitle2" noWrap>
-          {product.name}
-          {product.stock}
-        </Link>
+          {product.nutrition_info && (
+            <Typography variant="body2" color="text.secondary">
+              {product.nutrition_info}
+            </Typography>
+          )}
 
-        <Typography variant="body2" color="text.secondary">
-        Stock: {product.stock ?? 'Sense estoc'}
-        </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Stock: {product.stock ?? 'Sense estoc'}
+          </Typography>
 
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
-          Es necessita: {product.Quantitat}
-          {renderPrice}
-        </Box>
-      </Stack>
-    </Card>
-  );
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Typography variant="body2">Es necessita: {product.Quantitat}</Typography>
+            <Typography variant="h6">{renderPrice}</Typography>
+          </Box>
+        </Stack>
+      </Card>
+    );
 }
