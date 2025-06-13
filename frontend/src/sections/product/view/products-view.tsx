@@ -65,7 +65,6 @@ export type ItemProps = {
 export function ProductsView() {
 
   const location = useLocation();
-  const name = location.state?.name;
 
   const producte = location.state;
 
@@ -82,7 +81,7 @@ export function ProductsView() {
     <DashboardContent>
 
     <Typography variant="h4" sx={{ mb: 3 }}>
-      Producte seleccionat: {name}
+      Producte seleccionat: {producte.name ?? producte.id}
     </Typography>
 
     <Box

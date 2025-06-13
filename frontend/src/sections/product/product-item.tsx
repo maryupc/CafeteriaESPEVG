@@ -14,8 +14,8 @@ import { ColorPreview } from 'src/components/color-utils';
 export type ProductItemProps = {
   name: string;
   brand: string;
-  price: number;
   nutrition_info: string;
+  price: number;
   Quantitat: number;
   stock: number | null;
 };

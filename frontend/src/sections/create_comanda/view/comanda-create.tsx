@@ -43,7 +43,7 @@ export type ComandaItem = {
 };
 
 export type ComandaProps = {
-  id_usuari: number;
+  id_usuari: number | null;
   date: string;
   time: string;
   preu_total: number;
@@ -92,28 +92,69 @@ export function CreateComanda() {
 
   };
 
-const handleCreate = () => {
-  if ((value !== 'Anònim' && inputValue.trim() === '') || items.length === 0 || !metodePagament) {
+const handleCreate = async () => {
+  if (
+    (value !== 'Anònim' && inputValue.trim() === '') ||
+    items.length === 0 ||
+    !metodePagament
+  ) {
     alert('Falten dades per completar la comanda.');
     return;
   }
 
   const newComanda: ComandaProps = {
-    id_usuari: value === 'Anònim' ? 0 : parseInt(inputValue),
-    date: new Date().toLocaleDateString('en-CA'),
-    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    id_usuari: value === 'Anònim' ? null : parseInt(inputValue),
+    date: new Date().toLocaleDateString('en-CA'), // YYYY-MM-DD
+    time: new Date().toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    }), // HH:mm
     preu_total: total,
     tipus_pagament: metodePagament,
-    items: [...items], // copiamos los productos seleccionados
+    items: [...items], // [{ id: '1', quantitat: 2 }]
   };
 
-  setComandes((prev) => [...prev, newComanda]);
+  try {
+    const response = await fetch('http://localhost:8000/comandes/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        member_id: newComanda.id_usuari,
+        c_date: newComanda.date,
+        c_time: newComanda.time,
+        total_price: newComanda.preu_total,
+        payment_method: newComanda.tipus_pagament,
+        items: newComanda.items.map(item => ({
+          id_item: parseInt(item.id),
+          quantity: item.quantitat,
+        })),
+      })
+    });
 
-  // Limpiar campos
-  setInputValue('');
-  setItems([{ id: '', quantitat: 1 }]);
-  setMetodePagament('');
+    if (!response.ok) {
+      throw new Error('Error al enviar la comanda');
+    }
+
+    const result = await response.json();
+    console.log('Comanda enviada correctament:', result);
+    alert('Comanda enviada correctament!');
+
+    // Guarda local
+    setComandes((prev) => [...prev, newComanda]);
+
+    // Limpiar campos
+    setInputValue('');
+    setItems([{ id: '', quantitat: 1 }]);
+    setMetodePagament('');
+  } catch (error) {
+    console.error(error);
+    alert('Hi ha hagut un error en enviar la comanda.');
+  }
 };
+
 
 const handleChangeItem = (
   index: number,
