@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from app.database import database
-from app.routes import comandes, item_producte, quantitat_items, items
+from app.routes import comandes, item_producte, quantitat_items, items, quantitat_aliments
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -26,3 +26,4 @@ app.include_router(comandes.router, prefix="/comandes", tags=["comandes"])
 app.include_router(item_producte.router, prefix="/item_productes", tags=["ItemProductes"])
 app.include_router(quantitat_items.router, prefix="/quantitatitems", tags=["quantitatitems"])
 app.include_router(items.router, prefix="/items", tags=["items"])
+app.include_router(quantitat_aliments.router, prefix="/quantitat_aliments", tags=["quantitataliments"])
