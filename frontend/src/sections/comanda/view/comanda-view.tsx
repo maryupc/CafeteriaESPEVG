@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -9,30 +10,35 @@ import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
-import { _item } from 'src/_mock';
+import { _comandes } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
 
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 
 import { TableNoData } from '../table-no-data';
-import { ItemTableRow } from '../user-table-row';
-import { ItemTableHead } from '../user-table-head';
 import { TableEmptyRows } from '../table-empty-rows';
-import { ItemTableToolbar } from '../user-table-toolbar';
+import { ComandesTableRow } from '../comanda-table-row';
+import { ComandaTableHead } from '../comanda-table-head';
+import { UserTableToolbar } from '../comanda-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 
-import type { ItemProps } from '../user-table-row';
+import type { ComandaProps } from '../comanda-table-row';
 
 // ----------------------------------------------------------------------
 
-export function UserView() {
+export function ComandaView() {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate('/createcomanda'); // Reemplaza con tu ruta deseada
+  };
   const table = useTable();
 
   const [filterName, setFilterName] = useState('');
 
-  const dataFiltered: ItemProps[] = applyFilter({
-    inputData: _item,
+  const dataFiltered: ComandaProps[] = applyFilter({
+    inputData: _comandes,
     comparator: getComparator(table.order, table.orderBy),
     filterName,
   });
@@ -49,19 +55,20 @@ export function UserView() {
         }}
       >
         <Typography variant="h4" sx={{ flexGrow: 1 }}>
-          Items
+          Comandes
         </Typography>
         <Button
           variant="contained"
           color="inherit"
           startIcon={<Iconify icon="mingcute:add-line" />}
+          onClick={handleClick}
         >
-          Nou Item
+          Nova comanda
         </Button>
       </Box>
 
       <Card>
-        <ItemTableToolbar
+        <UserTableToolbar
           numSelected={table.selected.length}
           filterName={filterName}
           onFilterName={(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,23 +80,25 @@ export function UserView() {
         <Scrollbar>
           <TableContainer sx={{ overflow: 'unset' }}>
             <Table sx={{ minWidth: 800 }}>
-              <ItemTableHead
+              <ComandaTableHead
                 order={table.order}
                 orderBy={table.orderBy}
-                rowCount={_item.length}
+                rowCount={_comandes.length}
                 numSelected={table.selected.length}
                 onSort={table.onSort}
                 onSelectAllRows={(checked) =>
                   table.onSelectAllRows(
                     checked,
-                    _item.map((item) => item.id)
+                    _comandes.map((comanda) => comanda.id)
                   )
                 }
                 headLabel={[
                   { id: 'id', label: 'Id' },
-                  { id: 'name', label: 'Nom' },
-                  { id: 'tipus', label: 'Tipus' },
-                  { id: 'preu', label: 'Preu' },
+                  { id: 'Usuari', label: 'id_usuari' },
+                  { id: 'date', label: 'Data i Hora' },
+                  { id: 'time', label: 'Hora' },
+                  { id: 'preu_total', label: 'Preu total' },
+                  { id: 'tipus_pagament', label: 'Tipus pagament' },
                   { id: '' },
                 ]}
               />
@@ -100,7 +109,7 @@ export function UserView() {
                     table.page * table.rowsPerPage + table.rowsPerPage
                   )
                   .map((row) => (
-                    <ItemTableRow
+                    <ComandesTableRow
                       key={row.id}
                       row={row}
                       selected={table.selected.includes(row.id)}
@@ -110,7 +119,7 @@ export function UserView() {
 
                 <TableEmptyRows
                   height={68}
-                  emptyRows={emptyRows(table.page, table.rowsPerPage, _item.length)}
+                  emptyRows={emptyRows(table.page, table.rowsPerPage, _comandes.length)}
                 />
 
                 {notFound && <TableNoData searchQuery={filterName} />}
@@ -122,7 +131,7 @@ export function UserView() {
         <TablePagination
           component="div"
           page={table.page}
-          count={_item.length}
+          count={_comandes.length}
           rowsPerPage={table.rowsPerPage}
           onPageChange={table.onChangePage}
           rowsPerPageOptions={[5, 10, 25]}

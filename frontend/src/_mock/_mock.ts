@@ -1,5 +1,7 @@
 export const _id = (index: number) => `e99f09a7-${index}`;
 
+export const _idusuari = (index: number): number => index;
+
 export const _times = (index: number) =>
   // 'MM/DD/YYYY'
   [
@@ -28,6 +30,36 @@ export const _times = (index: number) =>
     '10/19/2023',
     '08/09/2024',
   ][index];
+
+export const _hours = (index: number): string =>
+  [
+    '08:00',
+    '09:30',
+    '11:00',
+    '12:45',
+    '14:00',
+    '15:15',
+    '16:30',
+    '18:00',
+    '19:30',
+    '21:00',
+    '22:15',
+    '23:45',
+    '01:00',
+    '02:30',
+    '04:00',
+    '05:15',
+    '06:45',
+    '07:30',
+    '10:15',
+    '13:00',
+    '17:45',
+    '20:00',
+    '23:00',
+    '00:30',
+  ][index];
+
+
 
 export const _tipus = (index: number) =>
   [

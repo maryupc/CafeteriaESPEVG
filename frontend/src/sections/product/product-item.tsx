@@ -74,7 +74,7 @@ export function ProductItem({ product }: { product: ProductItemProps }) {
             justifyContent: 'space-between',
           }}
         >
-          Necessitas: {product.Quantitat}
+          Es necessita: {product.Quantitat}
           {renderPrice}
         </Box>
       </Stack>

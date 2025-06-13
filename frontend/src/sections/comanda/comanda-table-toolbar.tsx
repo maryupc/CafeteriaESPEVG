@@ -9,13 +9,13 @@ import { Iconify } from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-type ItemTableToolbarProps = {
+type UserTableToolbarProps = {
   numSelected: number;
   filterName: string;
   onFilterName: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-export function ItemTableToolbar({ numSelected, filterName, onFilterName }: ItemTableToolbarProps) {
+export function UserTableToolbar({ numSelected, filterName, onFilterName }: UserTableToolbarProps) {
   return (
     <Toolbar
       sx={{
@@ -38,7 +38,7 @@ export function ItemTableToolbar({ numSelected, filterName, onFilterName }: Item
           fullWidth
           value={filterName}
           onChange={onFilterName}
-          placeholder="Filtrar menú o producte..."
+          placeholder="Filtrar per ID usuari..."
           startAdornment={
             <InputAdornment position="start">
               <Iconify width={20} icon="eva:search-fill" sx={{ color: 'text.disabled' }} />

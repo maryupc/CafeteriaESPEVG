@@ -1,7 +1,9 @@
 import {
   _id,
+  _idusuari,
   _price,
   _times,
+  _hours,
   _preu,
   _boolean,
   _tipus,
@@ -38,6 +40,42 @@ export const _item = [...Array(24)].map((_, index) => {
   };
 });
 
+export const _comandes = [...Array(24)].map((_, index) => {
+  const tipus = _tipus(index);
+  return {
+    id: _id(index),
+    id_usuari: _idusuari(index),
+    date: _times(index),
+    time: _hours(index),
+    preu_total: _price(index),
+    tipus_pagament: "targeta",    
+  };
+});
+
+
+export const _products = [...Array(24)].map((_, index) => {
+  const setIndex = index + 1;
+
+  let quantitat = 0;
+  if ([1, 3, 5].includes(setIndex)) quantitat = 10;
+  else if ([4, 8, 12].includes(setIndex)) quantitat = 5;
+
+  return {
+    name: _alimentNames(index),
+    brand: _alimentNames(index),
+    nutrition_info: _description(index),
+    price: _price(index),
+    coverUrl: `/assets/images/product/product-${setIndex}.webp`,
+    Quantitat: quantitat,// 5 unidades
+    stock:
+      ([1, 3, 5].includes(setIndex) && 10) ||  // por ejemplo, 10 unidades en stock
+      ([4, 8, 12].includes(setIndex) && 5) ||  // 5 unidades
+      null, 
+  };
+});
+
+
+
 // ----------------------------------------------------------------------
 
 export const _posts = [...Array(23)].map((_, index) => ({
@@ -69,26 +107,7 @@ const COLORS = [
   '#FFC107',
 ];
 
-export const _products = [...Array(24)].map((_, index) => {
-  const setIndex = index + 1;
 
-  let quantitat = 0;
-  if ([1, 3, 5].includes(setIndex)) quantitat = 10;
-  else if ([4, 8, 12].includes(setIndex)) quantitat = 5;
-
-  return {
-    name: _alimentNames(index),
-    brand: _alimentNames(index),
-    nutrition_info: _description(index),
-    price: _price(index),
-    coverUrl: `/assets/images/product/product-${setIndex}.webp`,
-    Quantitat: quantitat,// 5 unidades
-    stock:
-      ([1, 3, 5].includes(setIndex) && 10) ||  // por ejemplo, 10 unidades en stock
-      ([4, 8, 12].includes(setIndex) && 5) ||  // 5 unidades
-      null, 
-  };
-});
 
 // ----------------------------------------------------------------------
 

@@ -18,23 +18,24 @@ import { Iconify } from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-export type ItemProps = {
+
+export type ComandaProps = {
   id: string;
-  tipus: string;
-  name: string | null;
-  preu: number;
+  id_usuari: number;
+  date: string;
+  time: string;
+  preu_total: number;
+  tipus_pagament: string;
+
 };
 
-
-
-
-type ItemTableRowProps = {
-  row: ItemProps;
+type ComandesTableRowProps = {
+  row: ComandaProps;
   selected: boolean;
   onSelectRow: () => void;
 };
 
-export function ItemTableRow({ row, selected, onSelectRow }: ItemTableRowProps) {
+export function ComandesTableRow({ row, selected, onSelectRow }: ComandesTableRowProps) {
   const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
   const navigate = useNavigate();
 
@@ -47,7 +48,6 @@ export function ItemTableRow({ row, selected, onSelectRow }: ItemTableRowProps) 
   }, []);
 
   const handleEdit = () => {
-    navigate('/products', { state: { name: row.name ?? row.id } }); 
     handleClosePopover();
   };
   return (
@@ -58,23 +58,18 @@ export function ItemTableRow({ row, selected, onSelectRow }: ItemTableRowProps) 
         </TableCell>
 
         <TableCell component="th" scope="row">
-          <Box
-            sx={{
-              gap: 2,
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <Avatar alt={row.id}/>
             {row.id}
-          </Box>
         </TableCell>
 
-        <TableCell>{row.name}</TableCell>
+        <TableCell>{row.id_usuari}</TableCell>
 
-        <TableCell>{row.tipus}</TableCell>
+        <TableCell>{row.date}</TableCell>
 
-        <TableCell>{row.preu}</TableCell>
+        <TableCell>{row.time}</TableCell>
+
+        <TableCell>{row.preu_total}</TableCell>
+
+        <TableCell>{row.tipus_pagament}</TableCell>
 
         <TableCell align="right">
           <IconButton onClick={handleOpenPopover}>

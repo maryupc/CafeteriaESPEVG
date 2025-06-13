@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -58,6 +59,10 @@ const defaultFilters = {
 };
 
 export function ProductsView() {
+
+  const location = useLocation();
+  const name = location.state?.name;
+
   const [sortBy, setSortBy] = useState('featured');
 
   const [openFilter, setOpenFilter] = useState(false);
@@ -88,7 +93,7 @@ export function ProductsView() {
     <DashboardContent>
 
       <Typography variant="h4" sx={{ mb: 5 }}>
-        Products
+        Producte seleccionat: {name}
       </Typography>
       <Box
         sx={{
@@ -145,7 +150,6 @@ export function ProductsView() {
         ))}
       </Grid>
 
-      <Pagination count={10} color="primary" sx={{ mt: 8, mx: 'auto' }} />
     </DashboardContent>
   );
 }

@@ -9,7 +9,7 @@ import { visuallyHidden } from './utils';
 
 // ----------------------------------------------------------------------
 
-type ItemTableHeadProps = {
+type ComandesTableHeadProps = {
   orderBy: string;
   rowCount: number;
   numSelected: number;
@@ -19,7 +19,7 @@ type ItemTableHeadProps = {
   onSelectAllRows: (checked: boolean) => void;
 };
 
-export function ItemTableHead({
+export function ComandaTableHead({
   order,
   onSort,
   orderBy,
@@ -27,7 +27,7 @@ export function ItemTableHead({
   headLabel,
   numSelected,
   onSelectAllRows,
-}: ItemTableHeadProps) {
+}: ComandesTableHeadProps) {
   return (
     <TableHead>
       <TableRow>

@@ -1,4 +1,4 @@
-import type { ItemProps } from './user-table-row';
+import type { ComandaProps } from './comanda-table-row';
 
 // ----------------------------------------------------------------------
 
@@ -53,7 +53,7 @@ export function getComparator<Key extends keyof any>(
 // ----------------------------------------------------------------------
 
 type ApplyFilterProps = {
-  inputData: ItemProps[];
+  inputData: ComandaProps[];
   filterName: string;
   comparator: (a: any, b: any) => number;
 };
@@ -70,8 +70,8 @@ export function applyFilter({ inputData, comparator, filterName }: ApplyFilterPr
   inputData = stabilizedThis.map((el) => el[0]);
 
   if (filterName) {
-    inputData = inputData.filter(
-      (item) => item.tipus.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+    inputData = inputData.filter((comanda) =>
+      comanda.id_usuari.toString().toLowerCase().includes(filterName.toLowerCase())
     );
   }
 
