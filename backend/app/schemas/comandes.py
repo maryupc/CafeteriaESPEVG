@@ -7,6 +7,7 @@ ConstrainedDecimal = Annotated[Decimal, condecimal(max_digits=8, decimal_places=
 ConstrainedStr = Annotated[str, constr(max_length=20)]
 
 class ComandaBase(BaseModel):
+    id: int
     member_id: Optional[int] = None
     c_date: date
     c_time: time

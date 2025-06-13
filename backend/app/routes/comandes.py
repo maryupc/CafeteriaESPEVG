@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, status, Query
 from typing import List
 from datetime import date
 from app.schemas.comandes import Comanda, ComandaCreate, ComandaUpdate
+from app.schemas.quantitat_items import QuantitatItemsCreate
 from app.crud.comandes import get_comandes, get_comanda, create_comanda, update_comanda, delete_comanda, get_comandes_by_date
 from app.database import database
 
@@ -22,12 +23,12 @@ async def read_comanda(id: int, c_date: date):
     return comanda
 
 @router.post("/", response_model=Comanda, status_code=status.HTTP_201_CREATED)
-async def create_new_comanda(comanda: ComandaCreate):
-    existing = await get_comanda(database, comanda.id, comanda.c_date)
-    if existing:
-        raise HTTPException(status_code=400, detail="Comanda already exists")
-    await create_comanda(database, comanda)
-    return comanda
+async def create_new_comanda(
+    comanda: ComandaCreate,
+    quantitat_data: QuantitatItemsCreate
+):
+    new_id = await create_comanda(database, comanda, quantitat_data)
+    return Comanda(id=new_id, **comanda.model_dump())
 
 @router.put("/{id}/{c_date}", response_model=Comanda)
 async def update_existing_comanda(id: int, c_date: date, comanda: ComandaUpdate):
@@ -35,7 +36,7 @@ async def update_existing_comanda(id: int, c_date: date, comanda: ComandaUpdate)
     if not existing:
         raise HTTPException(status_code=404, detail="Comanda not found")
     await update_comanda(database, id, c_date, comanda)
-    return {**comanda.dict(), "id": id, "c_date": c_date}
+    return {**comanda.model_dump(), "id": id, "c_date": c_date}
 
 @router.delete("/{id}/{c_date}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_existing_comanda(id: int, c_date: date):
