@@ -3,7 +3,7 @@ from typing import List
 from datetime import date
 from app.schemas.comandes import Comanda, ComandaCreate, ComandaUpdate
 from app.schemas.quantitat_items import QuantitatItemsCreate, ComandaWithItemsCreate
-from app.crud.comandes import get_comandes, get_comanda, create_comanda, update_comanda, delete_comanda, get_comandes_by_date
+from app.crud.comandes import get_comandes, get_comanda, create_comanda, update_comanda, delete_comanda, get_comandes_by_date, get_summary_today
 from app.database import database
 
 router = APIRouter()
@@ -57,3 +57,7 @@ async def delete_existing_comanda(id: int, c_date: date):
         raise HTTPException(status_code=404, detail="Comanda not found")
     await delete_comanda(database, id, c_date)
 
+@router.get("/resum")
+async def get_today_summary():
+    summary = await get_summary_today(database)
+    return summary

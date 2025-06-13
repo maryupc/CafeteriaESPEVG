@@ -94,3 +94,24 @@ async def delete_comanda(db: Database, id: int, c_date) -> int:
     )
     return await db.execute(query)
 
+async def get_summary_today(db: Database):
+    today = date.today()
+    query = select(
+        func.sum(comandes.c.total_price).label("total_revenue"),
+        func.count(comandes.c.id).label("total_comandes"),
+        func.count(func.distinct(comandes.c.member_id)).label("unique_members"),
+    ).where(comandes.c.c_date == today)
+
+    result = await db.fetch_one(query)
+    if result is None:
+        return {
+            "total_revenue": 0,
+            "total_comandes": 0,
+            "unique_members": 0,
+        }
+    return {
+        "total_revenue": result["total_revenue"] or 0,
+        "total_comandes": result["total_comandes"] or 0,
+        "unique_members": result["unique_members"] or 0,
+    }
+
