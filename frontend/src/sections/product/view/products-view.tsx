@@ -82,7 +82,7 @@ export function ProductsView() {
     <DashboardContent>
 
     <Typography variant="h4" sx={{ mb: 3 }}>
-      Producte seleccionat: {name}
+      Producte seleccionat: {producte.name ?? producte.id}
     </Typography>
 
     <Box
