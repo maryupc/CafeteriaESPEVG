@@ -45,12 +45,12 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   }
 };
 
-const updateQuantitat = async (id: number, name: string, brand: string, quantity: number) => {
+const updateQuantitat = async (id_prod: number, name: string, brand: string, quantity: number) => {
   try {
     const encodedBrand = encodeURIComponent(brand); // necesario por los espacios
 
     const res = await fetch(
-      `http://127.0.0.1:8000/quantitat_aliments/${id}/${name}/${encodedBrand}`,
+      `http://127.0.0.1:8000/quantitat_aliments/${id_prod}/${name}/${encodedBrand}`,
       {
         method: 'PUT',
         headers: {
