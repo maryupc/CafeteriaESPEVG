@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
@@ -30,6 +31,32 @@ export function OverviewAnalyticsView() {
     navigate('/createcomanda'); // Reemplaza con tu ruta deseada
   };
 
+  async function fetchResumData() {
+  const response = await fetch('http://127.0.0.1:8000/comandes/resum');
+  if (!response.ok) throw new Error('Error fetching resum data');
+  return await response.json();
+}
+
+const [resum, setResum] = useState<{
+  total_revenue: number;
+  total_comandes: number;
+  unique_members: number;
+} | null>(null);
+
+useEffect(() => {
+  const loadResum = async () => {
+    try {
+      const response = await fetch('http://127.0.0.1:8000/comandes/resum');
+      if (!response.ok) throw new Error('Error fetching resum data');
+      const data = await response.json();
+      setResum(data);
+    } catch (error) {
+      console.error('Error fetching resum:', error);
+    }
+  };
+
+  loadResum();
+}, []);
 
   return (
     <DashboardContent maxWidth="xl">
@@ -59,7 +86,7 @@ export function OverviewAnalyticsView() {
           <AnalyticsWidgetSummary
             title="Total ganancies"
             //percent={2.6}
-            total={714000}
+            total={resum?.total_revenue ?? 0}
             icon={<img alt="Weekly sales" src="/assets/icons/glass/ic-glass-bag.svg" />}
             /*chart={{
               categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
@@ -71,7 +98,7 @@ export function OverviewAnalyticsView() {
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
             title="Clients nous"
-            total={1352831}
+            total={resum?.unique_members ?? 0}
             color="secondary"
             icon={<img alt="New users" src="/assets/icons/glass/ic-glass-users.svg" />}
             // chart={{
@@ -85,7 +112,7 @@ export function OverviewAnalyticsView() {
           <AnalyticsWidgetSummary
             title="Vendes diaries"
             //percent={2.8}
-            total={1723315}
+            total={resum?.total_comandes ?? 0}
             color="warning"
             icon={<img alt="Purchase orders" src="/assets/icons/glass/ic-glass-buy.svg" />}
            /* chart={{
