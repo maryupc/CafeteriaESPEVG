@@ -65,7 +65,6 @@ export type ItemProps = {
 export function ProductsView() {
 
   const location = useLocation();
-  const name = location.state?.name;
 
   const producte = location.state;
 
