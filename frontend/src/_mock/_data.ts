@@ -108,6 +108,33 @@ export async function fetchComandesFromAPI(): Promise<ComandaProps[]> {
   }
 }
 
+export async function fetchProducts(id: number) {
+  const response = await fetch(`http://127.0.0.1:8000/quantitat_aliments/${id}`, {
+    headers: {
+      Accept: 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch products');
+  }
+
+  const data = await response.json();
+
+  // Mapear la respuesta para que tenga la estructura que usas en _products
+  const products = data.map((item: any) => ({
+    name: item.name,
+    brand: item.brand,
+    nutrition_info: item.nutrition_info,
+    price: item.price,
+    Quantitat: item.quantity,  // del JSON es quantity, en tu código es Quantitat
+    stock: item.stock,
+  }));
+
+  return products;
+}
+
+
 
 export const _comandes = [...Array(24)].map((_, index) => {
   const tipus = _tipus(index);
