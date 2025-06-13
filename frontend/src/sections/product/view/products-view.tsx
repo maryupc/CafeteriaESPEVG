@@ -71,6 +71,9 @@ export function ProductsView() {
         justifyContent: 'space-between',
       }}
     >
+        <Typography variant="h6">
+        Aquest producte conté els següents aliments:
+      </Typography>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
         <Typography variant="h6">Preu producte:</Typography>
         <TextField
@@ -82,9 +85,7 @@ export function ProductsView() {
         />
       </Box>
 
-      <Typography variant="h6">
-        Aquest producte conté els següents aliments:
-      </Typography>
+
     </Box>
 
       <Grid container spacing={3}>
