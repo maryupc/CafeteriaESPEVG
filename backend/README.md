@@ -1,7 +1,3 @@
-Great! Based on your directory structure, here's a tailored `README.md` for your FastAPI project:
-
----
-
 # ☕ CafeteriaESPEVG API
 
 Backend API for managing cafeteria orders (`comandes`), items, menus, and product data using **FastAPI**, **PostgreSQL**, and **SQLAlchemy**.
