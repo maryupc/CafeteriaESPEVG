@@ -99,15 +99,6 @@ http://127.0.0.1:8000
 
 ---
 
-## 📬 API Docs
-
-Interactive documentation is automatically available at:
-
-* Swagger: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-* ReDoc: [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
-
----
-
 ## 🧪 Testing the API
 
 You can use `curl`, Postman, or the Swagger UI to test endpoints.
