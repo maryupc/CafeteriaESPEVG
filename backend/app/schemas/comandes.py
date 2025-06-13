@@ -7,14 +7,14 @@ ConstrainedDecimal = Annotated[Decimal, condecimal(max_digits=8, decimal_places=
 ConstrainedStr = Annotated[str, constr(max_length=20)]
 
 class ComandaBase(BaseModel):
+    member_id: Optional[int] = None
     c_date: date
     c_time: time
     total_price: ConstrainedDecimal
     payment_method: ConstrainedStr
-    member_id: Optional[int] = None
 
 class ComandaCreate(ComandaBase):
-    id: int
+    pass
 
 class ComandaUpdate(ComandaBase):
     pass
