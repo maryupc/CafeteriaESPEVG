@@ -28,9 +28,4 @@ export const navData = [
     path: '/comanda',
     icon: icon('ic-cart'),
   },
-  {
-    title: 'products',
-    path: '/products',
-    icon: icon('ic-disabled'),
-  },
 ];
