@@ -3,10 +3,11 @@ from databases import Database
 from app.models.comandes import comandes
 from app.schemas.comandes import ComandaCreate, ComandaUpdate
 from app.models.quantitat_items import quantitatitems
+from app.models.clients import clients
 from app.schemas.quantitat_items import QuantitatItemsCreate
 from datetime import date
 import sqlalchemy
-from sqlalchemy import select, func
+from sqlalchemy import select, func, distinct, case, cast, Integer, literal
 
 async def get_comandes(db: Database) -> List[dict]:
     today = date.today()
@@ -96,22 +97,62 @@ async def delete_comanda(db: Database, id: int, c_date) -> int:
 
 async def get_summary_today(db: Database):
     today = date.today()
-    query = select(
-        func.sum(comandes.c.total_price).label("total_revenue"),
-        func.count(comandes.c.id).label("total_comandes"),
-        func.count(func.distinct(comandes.c.member_id)).label("unique_members"),
-    ).where(comandes.c.c_date == today)
 
-    result = await db.fetch_one(query)
+    join_stmt = comandes.outerjoin(clients, comandes.c.member_id == clients.c.member_id)
+
+    # Build query with counts by condition
+    summary_query = (
+        select(
+            func.sum(comandes.c.total_price).label("total_revenue"),
+            func.count(comandes.c.id).label("total_comandes"),
+            func.count(func.distinct(comandes.c.member_id)).label("registered_members"),
+
+            func.count(
+                distinct(
+                    case(
+                        (clients.c.is_student.is_(True), clients.c.member_id),
+                        else_=None
+                    )
+                )
+            ).label("total_students"),
+
+            func.count(
+                distinct(
+                    case(
+                        (clients.c.is_student.is_(False), clients.c.member_id),
+                        else_=None
+                    )
+                )
+            ).label("total_professors"),
+
+            func.count(
+                case(
+                    (comandes.c.member_id.is_(None),comandes.c.id),
+                    else_=None
+                )
+            ).label("total_unspecified")
+        )
+        .select_from(join_stmt)
+        .where(comandes.c.c_date == today)
+    )    
+    result = await db.fetch_one(summary_query)
+
     if result is None:
         return {
             "total_revenue": 0,
             "total_comandes": 0,
-            "unique_members": 0,
+            "registered_members": 0,
+            "total_students": 0,
+            "total_professors": 0,
+            "total_unspecified": 0,
         }
+
     return {
         "total_revenue": result["total_revenue"] or 0,
         "total_comandes": result["total_comandes"] or 0,
-        "unique_members": result["unique_members"] or 0,
+        "registered_members": result["registered_members"] or 0,
+        "total_students": result["total_students"] or 0,
+        "total_professors": result["total_professors"] or 0,
+        "total_unspecified": result["total_unspecified"] or 0,
     }
 

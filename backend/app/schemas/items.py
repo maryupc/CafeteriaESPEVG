@@ -2,12 +2,17 @@ from pydantic import BaseModel
 from typing import Optional
 from decimal import Decimal
 
-class ItemWithTypeName(BaseModel):
+
+class ItemBase(BaseModel):
     id: int
     price: Decimal
+
+class ItemWithTypeName(ItemBase):
     type: str
-    name: Optional[str] = None  # only for productes
+    name: Optional[str] = None
 
     class Config:
         orm_mode = True
 
+class ItemUpdatePrice(BaseModel):
+    price: Decimal
