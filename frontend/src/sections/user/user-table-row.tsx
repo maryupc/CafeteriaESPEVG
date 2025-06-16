@@ -50,6 +50,28 @@ export function ItemTableRow({ row, selected, onSelectRow }: ItemTableRowProps) 
     navigate('/products', { state: row }); 
     handleClosePopover();
   };
+
+  const handleDelete = async () => {
+  try {
+    const response = await fetch(`http://localhost:8000/productes/${row.id}`, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      throw new Error('Error eliminant el producte');
+    }
+
+    console.log('Producte eliminat correctament');
+    // Aquí puedes hacer un redirect o actualizar la UI, por ejemplo:
+    // navigate(-1); // volver atrás
+    navigate(-1);
+  } catch (error) {
+    console.error('Error al eliminar:', error);
+  } finally {
+    handleClosePopover(); // cerrar el menú
+  }
+};
+
   return (
     <>
       <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
@@ -102,7 +124,7 @@ export function ItemTableRow({ row, selected, onSelectRow }: ItemTableRowProps) 
             Modificar
           </MenuItem>
 
-          <MenuItem onClick={handleClosePopover} sx={{ color: 'error.main' }}>
+          <MenuItem onClick={handleDelete} sx={{ color: 'error.main' }}>
             <Iconify icon="solar:trash-bin-trash-bold" />
             Eliminar
           </MenuItem>

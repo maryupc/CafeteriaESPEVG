@@ -41,6 +41,9 @@ const [resum, setResum] = useState<{
   total_revenue: number;
   total_comandes: number;
   unique_members: number;
+  total_students: number;
+  total_professors: number;
+  total_unspecified: number;
 } | null>(null);
 
 useEffect(() => {
@@ -126,11 +129,11 @@ useEffect(() => {
           <AnalyticsCurrentVisits
             title="Tipus de clients diaris"
             chart={{
-              series: [
-                { label: 'Estudiant', value: 3500 },
-                { label: 'Profesor', value: 2500 },
-                { label: 'No identificat', value: 1500 },
-              ],
+              series: resum ? [
+                { label: 'Estudiant', value: resum.total_students },
+                { label: 'Professor', value: resum.total_professors },
+                { label: 'No identificat', value: resum.total_unspecified },
+              ] : [],
             }}
           />
         </Grid>
