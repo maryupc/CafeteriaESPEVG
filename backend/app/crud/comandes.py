@@ -1,5 +1,7 @@
 from typing import List, Optional
 from databases import Database
+from app.crud.aliments import update_aliment_stock
+from app.crud.quantitat_aliments import get_aliments_by_producte
 from app.models.comandes import comandes
 from app.schemas.comandes import ComandaCreate, ComandaUpdate
 from app.models.quantitat_items import quantitatitems
@@ -7,7 +9,7 @@ from app.models.clients import clients
 from app.schemas.quantitat_items import QuantitatItemsCreate
 from datetime import date
 import sqlalchemy
-from sqlalchemy import select, func, distinct, case, cast, Integer, literal
+from sqlalchemy import select, func, distinct, case
 
 async def get_comandes(db: Database) -> List[dict]:
     today = date.today()
@@ -47,13 +49,11 @@ async def create_comanda(db: Database, comanda_data: ComandaCreate, quantitat_da
     async with db.transaction():
         today = comanda_data.c_date
 
-        # Get the max id for the day (or 0 if none)
         query_max_id = select(func.max(comandes.c.id)).where(comandes.c.c_date == today)
         last_id_row = await db.fetch_one(query_max_id)
         last_id = last_id_row[0] if last_id_row and last_id_row[0] is not None else 0
         new_id = last_id + 1
 
-        # Insert new comanda with the new_id
         query_insert_comanda = comandes.insert().values(
             id=new_id,
             member_id=comanda_data.member_id,
@@ -64,7 +64,6 @@ async def create_comanda(db: Database, comanda_data: ComandaCreate, quantitat_da
         )
         await db.execute(query_insert_comanda)
 
-        # Insert all quantitatitems with the new_id and date
         items_to_insert = [
             {
                 "id_comanda": new_id,
@@ -75,6 +74,12 @@ async def create_comanda(db: Database, comanda_data: ComandaCreate, quantitat_da
             for item in quantitat_data.items
         ]
         await db.execute_many(quantitatitems.insert(), items_to_insert)
+
+        for item in quantitat_data.items:
+            aliments = await get_aliments_by_producte(db,item.id_item)
+            for aliment in aliments:
+                new_stock = aliment["stock"] - aliment["quantity"] * item.quantity
+                await update_aliment_stock(db,aliment["name"],aliment["brand"],new_stock)
 
         return new_id
 
@@ -100,7 +105,6 @@ async def get_summary_today(db: Database):
 
     join_stmt = comandes.outerjoin(clients, comandes.c.member_id == clients.c.member_id)
 
-    # Build query with counts by condition
     summary_query = (
         select(
             func.sum(comandes.c.total_price).label("total_revenue"),

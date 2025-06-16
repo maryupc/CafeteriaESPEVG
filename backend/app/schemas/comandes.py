@@ -15,7 +15,7 @@ class ComandaBase(BaseModel):
     payment_method: ConstrainedStr
 
 class ComandaCreate(ComandaBase):
-    pass
+    is_student: Optional[bool] = None
 
 class ComandaUpdate(ComandaBase):
     pass

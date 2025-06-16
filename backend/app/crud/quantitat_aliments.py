@@ -27,7 +27,8 @@ async def get_aliments_by_producte(db: Database, id_producte: int):
         )
         .where(quantitat_aliments.c.id_producte == id_producte)
     )
-    return await db.fetch_all(query)
+    rows= await db.fetch_all(query)
+    return [dict(row) for row in rows]
 
 async def update_quantitat_aliment(
     db: Database,
