@@ -1,6 +1,9 @@
 from typing import List, Optional
 from databases import Database
 from app.crud.aliments import update_aliment_stock
+from app.crud.menu_producte import get_productes_by_menu
+from app.crud.menus import menu_exists
+from app.crud.productes import producte_exists
 from app.crud.quantitat_aliments import get_aliments_by_producte
 from app.models.comandes import comandes
 from app.schemas.comandes import ComandaCreate, ComandaUpdate
@@ -76,11 +79,21 @@ async def create_comanda(db: Database, comanda_data: ComandaCreate, quantitat_da
         await db.execute_many(quantitatitems.insert(), items_to_insert)
 
         for item in quantitat_data.items:
-            aliments = await get_aliments_by_producte(db,item.id_item)
-            for aliment in aliments:
-                new_stock = aliment["stock"] - aliment["quantity"] * item.quantity
-                await update_aliment_stock(db,aliment["name"],aliment["brand"],new_stock)
+            if await producte_exists(db, item.id_item):
+                aliments = await get_aliments_by_producte(db, item.id_item)
+                for aliment in aliments:
+                    new_stock = aliment["stock"] - aliment["quantity"] * item.quantity
+                    await update_aliment_stock(db, aliment["name"], aliment["brand"], new_stock)
 
+            elif await menu_exists(db, item.id_item):
+                productes_menu = await get_productes_by_menu(db, item.id_item)
+                for producte in productes_menu:
+                    aliments = await get_aliments_by_producte(db, producte["id"])
+                    for aliment in aliments:
+                        new_stock = aliment["stock"] - aliment["quantity"] * item.quantity
+                        await update_aliment_stock(db, aliment["name"], aliment["brand"], new_stock)
+            else:
+                raise ValueError(f"Item ID {item.id_item} not found in productes or menus.")
         return new_id
 
 async def update_comanda(db: Database, id: int, c_date, comanda: ComandaUpdate) -> int:

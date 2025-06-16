@@ -46,7 +46,6 @@ async def update_item_producte(db: Database, id: int, item_producte: ItemProduct
     )
     query_producte = productes.update().where(productes.c.id == id).values(
         name=item_producte.name,
-        barcode=item_producte.barcode
     )
     async with db.transaction():
         await db.execute(query_item)
