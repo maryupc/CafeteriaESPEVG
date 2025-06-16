@@ -28,3 +28,7 @@ async def update_price(db: Database, item_id: int, new_price: ItemUpdatePrice) -
         .values(price=new_price.price)
     )
     return await db.execute(query)
+
+async def delete_item(db: Database, item_id: int) -> int:
+    query = items.delete().where(items.c.id == item_id)
+    return await db.execute(query)
