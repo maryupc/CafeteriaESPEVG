@@ -49,11 +49,11 @@ export function ItemTableRow({ row, selected, onSelectRow }: ItemTableRowProps) 
   const handleEdit = () => {
     navigate('/products', { state: row }); 
     handleClosePopover();
-  };
+  }; 
 
   const handleDelete = async () => {
   try {
-    const response = await fetch(`http://localhost:8000/productes/${row.id}`, {
+    const response = await fetch(`http://localhost:8000/items/${row.id}`, {
       method: 'DELETE',
     });
 
